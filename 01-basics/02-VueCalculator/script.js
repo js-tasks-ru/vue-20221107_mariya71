@@ -8,10 +8,15 @@ const App = defineComponent({
 
   data() {
     return {
-      num1: 0,
-      num2: 0,
+      num1: null,
+      num2: null,
       operator: 'sum',
     };
+  },
+
+  async created() {
+    this.num1 = await Promise.resolve(19 );
+    this.num2 = await Promise.resolve(5 );
   },
 
   computed: {
