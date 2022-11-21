@@ -8,8 +8,8 @@ export default defineComponent({
       type: String,
     },
     image: {
-      type: String
-    }
+      type: String,
+    },
   },
 
   template: `
