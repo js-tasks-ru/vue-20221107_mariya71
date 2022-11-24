@@ -19,6 +19,7 @@ export default defineComponent({
       meetup: {},
       loading: false,
       error: false,
+      errorText: 'unknown error',
     };
   },
 
@@ -41,9 +42,10 @@ export default defineComponent({
         this.meetup = await fetchMeetupById(this.meetupId);
 
         this.loading = false;
-      } catch (e) {
+      } catch (error) {
         this.loading = false;
         this.error = true;
+        this.errorText = error;
       }
     },
   },
@@ -60,7 +62,7 @@ export default defineComponent({
         <UiAlert>Загрузка...</UiAlert>
       </UiContainer>
       <UiContainer v-else-if="error">
-        <UiAlert>error</UiAlert>
+        <UiAlert>{{ errorText }}</UiAlert>
       </UiContainer>
       <MeetupView :meetup="meetup" v-else/>
     </div>`,
