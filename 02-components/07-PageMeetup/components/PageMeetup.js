@@ -45,7 +45,7 @@ export default defineComponent({
       } catch (error) {
         this.loading = false;
         this.error = true;
-        this.errorText = error;
+        this.errorText = error.message;
       }
     },
   },
