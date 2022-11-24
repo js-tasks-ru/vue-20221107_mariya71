@@ -13,11 +13,11 @@ export default defineComponent({
 
   computed: {
     icon() {
-      return '/assets/icons/icon-' + agendaItemIcons[this.$props.agendaItem.type] + '.svg';
+      return '/assets/icons/icon-' + agendaItemIcons[this.agendaItem.type] + '.svg';
     },
 
     title() {
-      return this.agendaItem.title ? this.$props.agendaItem.title : agendaItemDefaultTitles[this.$props.agendaItem.type];
+      return this.agendaItem.title ? this.agendaItem.title : agendaItemDefaultTitles[this.agendaItem.type];
     },
   },
 

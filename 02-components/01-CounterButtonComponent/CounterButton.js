@@ -6,7 +6,6 @@ export default defineComponent({
   // Компонент должен иметь входной параметр и порождать событие
   props: {
     count: {
-      required: true,
       default: 0,
     },
   },

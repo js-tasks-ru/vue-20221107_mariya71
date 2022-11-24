@@ -16,14 +16,14 @@ export default defineComponent({
 
   data() {
     return {
-      meetup: fetchMeetupById(this.meetupId),
+      meetup: {},
       loading: false,
       error: false,
     };
   },
 
   async created() {
-    this.meetup = await fetchMeetupById(this.meetupId);
+    this.meetup = this.loadMeetup();
   },
 
   watch: {
@@ -55,7 +55,7 @@ export default defineComponent({
   },
 
   template: `
-    <div class="page-meetup">
+    <div class="page-meetup" v-if="meetup">
       <UiContainer v-if="loading">
         <UiAlert>Загрузка...</UiAlert>
       </UiContainer>
