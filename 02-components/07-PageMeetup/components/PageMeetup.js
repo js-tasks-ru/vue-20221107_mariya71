@@ -19,7 +19,7 @@ export default defineComponent({
       meetup: {},
       loading: false,
       error: false,
-      errorText: 'unknown error',
+      errorText: 'Unknown Error',
     };
   },
 
@@ -57,8 +57,8 @@ export default defineComponent({
   },
 
   template: `
-    <div class="page-meetup" v-if="meetup">
-      <UiContainer v-if="loading">
+    <div class="page-meetup">
+      <UiContainer v-if="loading || !meetup">
         <UiAlert>Загрузка...</UiAlert>
       </UiContainer>
       <UiContainer v-else-if="error">
