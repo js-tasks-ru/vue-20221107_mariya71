@@ -1,18 +1,24 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown"
+       :class="open ? 'dropdown_opened' : ''">
+    <button type="button" class="dropdown__toggle"
+            :class="{ 'dropdown__toggle_icon' : hasIcons }"
+            @click="toogleMenu">
+      <ui-icon :icon="activeItem.icon" class="dropdown__icon" v-if="activeItem && activeItem.icon" />
+      <span>{{ activeItem ? activeItem.text : title }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div
+         class="dropdown__menu"
+         :class="{ 'hidden' : !open }"
+         role="listbox">
+      <button v-for="option in options"
+              class="dropdown__item"
+              :class="{ 'dropdown__item_icon' : hasIcons }"
+              role="option" type="button"
+              @click="selectItem(option.value)">
+        <ui-icon :icon="option.icon" class="dropdown__icon" v-if="option.icon"/>
+        {{ option.text}}
       </button>
     </div>
   </div>
@@ -23,6 +29,57 @@ import UiIcon from './UiIcon';
 
 export default {
   name: 'UiDropdown',
+
+  props: {
+    'options': {
+      type: Array,
+      required: true,
+    },
+    'title': {
+      type: String,
+      required: true,
+    },
+    'modelValue': {
+      type: String,
+    },
+  },
+
+  data() {
+    return {
+      open: false,
+      itemId: null,
+    };
+  },
+
+  watch: {
+    modelValue: function(newVal) {
+      this.selectItem(newVal);
+    },
+  },
+
+  computed: {
+    hasIcons() {
+      let array = this.options.filter((el) => el.icon && el.icon.length > 0);
+      return array.length > 0 ? true : false;
+    },
+    activeItem() {
+      return this.options.find(el => el.value === this.itemId);
+    },
+  },
+
+  methods: {
+    toogleMenu() {
+      this.open = !this.open;
+    },
+    selectItem(key) {
+      this.itemId = key;
+      this.open = false;
+    },
+  },
+
+  created() {
+    this.itemId = this.modelValue;
+  },
 
   components: { UiIcon },
 };
@@ -137,5 +194,9 @@ export default {
   top: 50%;
   left: 16px;
   transform: translate(0, -50%);
+}
+
+.hidden {
+  display: none;
 }
 </style>
