@@ -47,7 +47,6 @@ export default {
   data() {
     return {
       open: false,
-      itemId: null,
     };
   },
 
@@ -69,10 +68,6 @@ export default {
       this.$emit('update:modelValue', value);
       this.open = false;
     },
-  },
-
-  created() {
-    this.itemId = this.modelValue;
   },
 
   components: { UiIcon },
