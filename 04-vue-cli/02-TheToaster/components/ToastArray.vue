@@ -1,6 +1,6 @@
 <template>
   <div class="toasts">
-    <ui-toast  v-for="toast in activeToasts" :type="toast.toastType">
+    <ui-toast  v-for="toast in toasts" :type="toast.toastType">
       <span>{{ toast.toastText }}</span>
     </ui-toast>
   </div>
@@ -15,16 +15,9 @@ export default {
   props: {
     'toasts': {
       type: Array,
-    }
-  },
-
-  computed: {
-    activeToasts() {
-      return this.toasts.filter(toast => new Date().getTime() - toast.timestamp < 5000);
     },
   },
 
   components: { UiToast },
-
 };
 </script>

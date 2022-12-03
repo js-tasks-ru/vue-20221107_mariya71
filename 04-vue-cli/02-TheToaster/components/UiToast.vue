@@ -1,6 +1,5 @@
 <template>
     <div
-      :id="id"
       class="toast"
       :class="toastClass"
     >
@@ -27,13 +26,6 @@ export default {
     }
   },
 
-  data() {
-    return {
-      intervalId: null,
-      id: (Math.random() + 1).toString(36).substring(2),
-    };
-  },
-
   components: { UiIcon },
 
   computed: {
@@ -43,17 +35,6 @@ export default {
     getIcon() {
       return types[this.type];
     },
-  },
-
-  created() {
-    this.intervalId = setInterval(() => {
-      document.getElementById(this.id).remove();
-      clearInterval(this.intervalId);
-    }, 5000);
-  },
-
-  beforeUnmount() {
-    clearInterval(this.intervalId);
   },
 };
 </script>

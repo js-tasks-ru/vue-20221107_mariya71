@@ -6,6 +6,7 @@
 
 <script>
 import ToastArray from "./ToastArray";
+import toastArray from "./ToastArray";
 
 export default {
   name: 'TheToaster',
@@ -13,7 +14,20 @@ export default {
   data() {
     return {
       toastArray: [],
+      cnt: 0,
     };
+  },
+
+  /*computed: {
+    arrayLength() {
+      return toastArray.length;
+    },
+  },*/
+
+  watch: {
+    cnt() {
+      this.deleteToast();
+    },
   },
 
   components: { ToastArray },
@@ -26,11 +40,16 @@ export default {
       this.addVal('success', val);
     },
     addVal(type, text) {
+      this.cnt++;
       this.toastArray.push({
         toastType: type,
         toastText: text,
-        timestamp: new Date().getTime()
       });
+    },
+    deleteToast() {
+      setTimeout(() => {
+        this.toastArray.splice(0, 1);
+      }, 5000);
     },
   },
 };
