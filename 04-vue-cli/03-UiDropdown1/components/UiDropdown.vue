@@ -1,8 +1,8 @@
 <template>
   <div class="dropdown"
-       :class="open ? 'dropdown_opened' : ''">
+       :class="{ 'dropdown_opened': open === true }">
     <button type="button" class="dropdown__toggle"
-            :class="{ 'dropdown__toggle_icon' : hasIcons }"
+            :class="{ 'dropdown__toggle_icon': hasIcons === true }"
             @click="toogleMenu">
       <ui-icon :icon="activeItem.icon" class="dropdown__icon" v-if="activeItem && activeItem.icon" />
       <span>{{ activeItem ? activeItem.text : title }}</span>
@@ -10,13 +10,13 @@
 
     <div
          class="dropdown__menu"
-         :class="{ 'hidden' : !open }"
+         v-show="open"
          role="listbox">
       <button v-for="option in options"
               class="dropdown__item"
-              :class="{ 'dropdown__item_icon' : hasIcons }"
+              :class="{ 'dropdown__item_icon': hasIcons === true }"
               role="option" type="button"
-              @click="selectItem(option.value)">
+              @click="select(option.value)">
         <ui-icon :icon="option.icon" class="dropdown__icon" v-if="option.icon"/>
         {{ option.text}}
       </button>
@@ -51,19 +51,13 @@ export default {
     };
   },
 
-  watch: {
-    modelValue: function(newVal) {
-      this.selectItem(newVal);
-    },
-  },
-
   computed: {
     hasIcons() {
       let array = this.options.filter((el) => el.icon && el.icon.length > 0);
-      return array.length > 0 ? true : false;
+      return array.length > 0;
     },
     activeItem() {
-      return this.options.find(el => el.value === this.itemId);
+      return this.options.find(el => el.value === this.modelValue);
     },
   },
 
@@ -71,8 +65,8 @@ export default {
     toogleMenu() {
       this.open = !this.open;
     },
-    selectItem(key) {
-      this.itemId = key;
+    select(value) {
+      this.$emit('update:modelValue', value);
       this.open = false;
     },
   },

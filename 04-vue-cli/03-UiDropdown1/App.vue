@@ -11,7 +11,7 @@
     <h2>Without icons</h2>
     <p>selectedLang = {{ selectedLang }}</p>
     <p>
-      <ui-dropdown v-model="selectedLang" :options="langOptions" title="Язык" modelValue="EN" />
+      <ui-dropdown v-model="selectedLang" :options="langOptions" title="Язык" />
     </p>
 
     <h2>Mixed icons</h2>
