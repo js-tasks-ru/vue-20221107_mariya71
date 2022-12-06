@@ -2,7 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 export const router = createRouter({
   history: createWebHistory('/05-vue-router/03-ScrollBehavior'),
-
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition || (to.meta?.saveScrollPosition === true && from.meta?.saveScrollPosition === true)) {
+      return savedPosition;
+    } else if (to.hash) {
+      return {
+        el: to.hash,
+      };
+    } else {
+      return { left: 0, top: 0 };
+    }
+  },
   routes: [
     {
       path: '/',
@@ -38,6 +48,7 @@ export const router = createRouter({
           props: true,
           component: () => import('../views/PageMeetupAgenda'),
         },
+
       ],
     },
   ],

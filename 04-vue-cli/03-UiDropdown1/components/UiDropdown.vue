@@ -1,18 +1,24 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown"
+       :class="{ 'dropdown_opened': open === true }">
+    <button type="button" class="dropdown__toggle"
+            :class="{ 'dropdown__toggle_icon': hasIcons === true }"
+            @click="toogleMenu">
+      <ui-icon :icon="activeItem.icon" class="dropdown__icon" v-if="activeItem && activeItem.icon" />
+      <span>{{ activeItem ? activeItem.text : title }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div
+         class="dropdown__menu"
+         v-show="open"
+         role="listbox">
+      <button v-for="option in options"
+              class="dropdown__item"
+              :class="{ 'dropdown__item_icon': hasIcons === true }"
+              role="option" type="button"
+              @click="select(option.value)">
+        <ui-icon :icon="option.icon" class="dropdown__icon" v-if="option.icon"/>
+        {{ option.text}}
       </button>
     </div>
   </div>
@@ -23,6 +29,46 @@ import UiIcon from './UiIcon';
 
 export default {
   name: 'UiDropdown',
+
+  props: {
+    'options': {
+      type: Array,
+      required: true,
+    },
+    'title': {
+      type: String,
+      required: true,
+    },
+    'modelValue': {
+      type: String,
+    },
+  },
+
+  data() {
+    return {
+      open: false,
+    };
+  },
+
+  computed: {
+    hasIcons() {
+      let array = this.options.filter((el) => el.icon && el.icon.length > 0);
+      return array.length > 0;
+    },
+    activeItem() {
+      return this.options.find(el => el.value === this.modelValue);
+    },
+  },
+
+  methods: {
+    toogleMenu() {
+      this.open = !this.open;
+    },
+    select(value) {
+      this.$emit('update:modelValue', value);
+      this.open = false;
+    },
+  },
 
   components: { UiIcon },
 };
@@ -137,5 +183,9 @@ export default {
   top: 50%;
   left: 16px;
   transform: translate(0, -50%);
+}
+
+.hidden {
+  display: none;
 }
 </style>
