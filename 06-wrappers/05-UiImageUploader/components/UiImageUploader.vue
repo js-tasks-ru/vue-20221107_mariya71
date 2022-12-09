@@ -1,6 +1,9 @@
 <template>
   <div class="image-uploader">
-    <label @click="preview ? removePreview() : null" class="image-uploader__preview image-uploader__preview-loading" :style="preview && `--bg-url: url('${preview}')`">
+    <label @click="preview ? removePreview() : null"
+           class="image-uploader__preview"
+           :class="{'image-uploader__preview-loading': currentStatus == STATUS_SAVING}"
+           :style="preview && `--bg-url: url('${preview}')`">
       <span class="image-uploader__text">{{ loaderText }}</span>
       <input v-if="!preview"
         ref="imageUploader"
