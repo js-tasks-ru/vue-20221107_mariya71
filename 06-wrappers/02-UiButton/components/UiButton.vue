@@ -2,8 +2,7 @@
   <component :is="tag"
              class="button"
              :class="buttonClass"
-             :type="type"
-             v-bind="$attrs">
+             :type="type">
     <slot/>
   </component>
 </template>
