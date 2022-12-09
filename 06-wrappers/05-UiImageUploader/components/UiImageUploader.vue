@@ -68,6 +68,7 @@ export default {
   methods: {
     removePreview() {
       this.$emit('remove');
+      this.uploadedFile = null;
       this.currentStatus = STATUS_INITIAL;
     },
     save() {
