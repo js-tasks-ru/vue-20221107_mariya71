@@ -1,11 +1,11 @@
 <template>
   <div class="image-uploader">
-    <label @click="preview ? removePreview() : null"
+    <label @click="currentStatus == 2 ? removePreview() : null"
            class="image-uploader__preview"
-           :class="{'image-uploader__preview-loading': currentStatus == STATUS_SAVING}"
-           :style="preview && `--bg-url: url('${preview}')`">
+           :class="{'image-uploader__preview-loading': currentStatus == 1}"
+           :style="currentStatus == 2 && `--bg-url: url('${image}')`">
       <span class="image-uploader__text">{{ loaderText }}</span>
-      <input v-if="!preview"
+      <input v-if="currentStatus != 2"
         ref="imageUploader"
         type="file"
         accept="image/*"
@@ -33,7 +33,7 @@ export default {
     return {
       uploadedFile: File,
       uploadError: null,
-      currentStatus: null,
+      currentStatus: this.preview ? STATUS_SUCCESS : STATUS_INITIAL,
     };
   },
 
@@ -55,6 +55,13 @@ export default {
           return 'Ошибка загрузки';
           break;
       };
+    },
+    image() {
+      if (this.preview) {
+        return this.preview;
+      } else if (this.uploadedFile) {
+        return URL.createObjectURL(this.uploadedFile);
+      }
     },
   },
 
@@ -80,14 +87,13 @@ export default {
     },
     filesChange(event) {
       this.uploadedFile = event.target.files[0];
-      this.save();
+
+      this.currentStatus = STATUS_SUCCESS;
+      if (this.uploader) {
+        this.save();
+      }
     },
   },
-
-  mounted() {
-    this.preview ? this.currentStatus = STATUS_SUCCESS : STATUS_INITIAL;
-  },
-
 };
 </script>
 
