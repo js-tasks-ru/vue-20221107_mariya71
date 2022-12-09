@@ -1,15 +1,90 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label @click="preview ? removePreview() : null" class="image-uploader__preview image-uploader__preview-loading" :style="preview && `--bg-url: url('${preview}')`">
+      <span class="image-uploader__text">{{ loaderText }}</span>
+      <input v-if="!preview"
+        ref="imageUploader"
+        type="file"
+        accept="image/*"
+        class="image-uploader__input"
+        v-bind="$attrs"
+        @input="filesChange($event)"
+      />
     </label>
   </div>
 </template>
 
 <script>
+
+const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
+
 export default {
   name: 'UiImageUploader',
+
+  props: {
+    preview: String,
+    uploader: Function,
+  },
+
+  data() {
+    return {
+      uploadedFile: File,
+      uploadError: null,
+      currentStatus: null,
+    };
+  },
+
+  emits: ['remove', 'upload'],
+
+  computed: {
+    loaderText() {
+      switch (this.currentStatus) {
+        case 0:
+          return 'Загрузить изображение';
+          break;
+        case 1:
+          return 'Загрузка..';
+          break;
+        case 2:
+          return 'Удалить изображение';
+          break;
+        case 3:
+          return 'Ошибка загрузки';
+          break;
+      };
+    },
+  },
+
+  methods: {
+    removePreview() {
+      this.$emit('remove');
+      this.currentStatus = STATUS_INITIAL;
+    },
+    save() {
+      // upload data to the server
+      this.currentStatus = STATUS_SAVING;
+      this
+        .uploader(this.uploadedFile)
+        .then(x => {
+          this.$emit('upload', x);
+          this.currentStatus = STATUS_SUCCESS;
+        })
+        .catch(err => {
+          this.uploadError = err;
+          this.currentStatus = STATUS_FAILED;
+          this.$refs['imageUploader'].value = null;
+        });
+    },
+    filesChange(event) {
+      this.uploadedFile = event.target.files[0];
+      this.save();
+    },
+  },
+
+  mounted() {
+    this.preview ? this.currentStatus = STATUS_SUCCESS : STATUS_INITIAL;
+  },
+
 };
 </script>
 
