@@ -3,7 +3,7 @@
     <label @click="currentStatus == 2 ? removePreview() : null"
            class="image-uploader__preview"
            :class="{'image-uploader__preview-loading': currentStatus == 1}"
-           :style="currentStatus == 2 && `--bg-url: url('${image}')`">
+           :style="[1, 2].includes(currentStatus) && `--bg-url: url('${image}')`">
       <span class="image-uploader__text">{{ loaderText }}</span>
       <input v-if="currentStatus != 2"
         ref="imageUploader"
