@@ -1,6 +1,6 @@
 <template>
   <div class="image-uploader">
-    <label @click="currentStatus == 2 ? removePreview() : null"
+    <label @click="currentStatus == 2 ? removePreview($event) : null"
            class="image-uploader__preview"
            :class="{'image-uploader__preview-loading': currentStatus == 1}"
            :style="[1, 2].includes(currentStatus) && `--bg-url: url('${image}')`">
@@ -34,21 +34,13 @@ export default {
       uploadedFile: File,
       uploadError: null,
       currentStatus: this.preview ? STATUS_SUCCESS : STATUS_INITIAL,
+      image: this.preview,
     };
   },
 
   emits: ['remove', 'upload', 'select', 'error'],
 
   computed: {
-    image() {
-      if (this.preview) {
-        return this.preview;
-      } else if (this.uploadedFile) {
-        return URL.createObjectURL(this.uploadedFile);
-      } else {
-        return null;
-      }
-    },
     loaderText() {
       switch (this.currentStatus) {
         case 0:
@@ -68,8 +60,11 @@ export default {
   },
 
   methods: {
-    removePreview() {
+    removePreview(event) {
+      event.preventDefault();
+
       this.uploadedFile = null;
+      this.image = null;
       this.currentStatus = STATUS_INITIAL;
     },
     save() {
@@ -85,6 +80,7 @@ export default {
           this.$emit('error');
 
           this.uploadedFile = null;
+          this.image = null;
           this.uploadError = err;
           this.currentStatus = STATUS_INITIAL;
           this.$refs['imageUploader'].value = null;
@@ -92,6 +88,7 @@ export default {
     },
     filesChange(event) {
       this.uploadedFile = event.target.files[0];
+      this.image = URL.createObjectURL(this.uploadedFile);
       this.$emit('select', event.target.files[0]);
       this.currentStatus = STATUS_SUCCESS;
 
