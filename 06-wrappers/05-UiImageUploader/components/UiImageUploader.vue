@@ -24,6 +24,8 @@ const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2;
 export default {
   name: 'UiImageUploader',
 
+  inheritAttrs: false,
+
   props: {
     preview: String,
     uploader: Function,
