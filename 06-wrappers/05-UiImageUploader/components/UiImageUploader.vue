@@ -3,7 +3,7 @@
     <label @click="currentStatus == 2 ? removePreview() : null"
            class="image-uploader__preview"
            :class="{'image-uploader__preview-loading': currentStatus == 1}"
-           :style="[1, 2].includes(currentStatus) && `--bg-url: url('${preview}')`">
+           :style="[1, 2].includes(currentStatus) && `--bg-url: url('${image}')`">
       <span class="image-uploader__text">{{ loaderText }}</span>
       <input v-if="currentStatus != 2"
         ref="imageUploader"
@@ -19,7 +19,7 @@
 
 <script>
 
-const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
+const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2;
 
 export default {
   name: 'UiImageUploader',
@@ -37,9 +37,18 @@ export default {
     };
   },
 
-  emits: ['remove', 'upload', 'select'],
+  emits: ['remove', 'upload', 'select', 'error'],
 
   computed: {
+    image() {
+      if (this.preview) {
+        return this.preview;
+      } else if (this.uploadedFile) {
+        return URL.createObjectURL(this.uploadedFile);
+      } else {
+        return null;
+      }
+    },
     loaderText() {
       switch (this.currentStatus) {
         case 0:
@@ -60,7 +69,6 @@ export default {
 
   methods: {
     removePreview() {
-      this.$emit('remove');
       this.uploadedFile = null;
       this.currentStatus = STATUS_INITIAL;
     },
@@ -74,17 +82,19 @@ export default {
           this.currentStatus = STATUS_SUCCESS;
         })
         .catch(err => {
+          this.$emit('error');
+
+          this.uploadedFile = null;
           this.uploadError = err;
-          this.currentStatus = STATUS_FAILED;
+          this.currentStatus = STATUS_INITIAL;
           this.$refs['imageUploader'].value = null;
         });
     },
     filesChange(event) {
       this.uploadedFile = event.target.files[0];
-
       this.$emit('select', event.target.files[0]);
-
       this.currentStatus = STATUS_SUCCESS;
+
       if (this.uploader) {
         this.save();
       }
