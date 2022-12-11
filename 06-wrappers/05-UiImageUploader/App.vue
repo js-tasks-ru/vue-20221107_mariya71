@@ -5,6 +5,7 @@
       :uploader="uploadImage"
       @remove="image = undefined"
       @upload="image = $event.image"
+      @select="changeImage"
     />
   </div>
 </template>
@@ -23,6 +24,11 @@ export default {
       image: 'https://course-vue.javascript.ru/api/images/1',
       uploadImage,
     };
+  },
+  methods: {
+    changeImage(file) {
+      this.image = URL.createObjectURL(file);
+    },
   },
 };
 </script>

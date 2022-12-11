@@ -3,7 +3,7 @@
     <label @click="currentStatus == 2 ? removePreview() : null"
            class="image-uploader__preview"
            :class="{'image-uploader__preview-loading': currentStatus == 1}"
-           :style="[1, 2].includes(currentStatus) && `--bg-url: url('${image}')`">
+           :style="[1, 2].includes(currentStatus) && `--bg-url: url('${preview}')`">
       <span class="image-uploader__text">{{ loaderText }}</span>
       <input v-if="currentStatus != 2"
         ref="imageUploader"
@@ -37,7 +37,7 @@ export default {
     };
   },
 
-  emits: ['remove', 'upload'],
+  emits: ['remove', 'upload', 'select'],
 
   computed: {
     loaderText() {
@@ -55,13 +55,6 @@ export default {
           return 'Ошибка загрузки';
           break;
       };
-    },
-    image() {
-      if (this.preview) {
-        return this.preview;
-      } else if (this.uploadedFile) {
-        return URL.createObjectURL(this.uploadedFile);
-      }
     },
   },
 
@@ -88,6 +81,8 @@ export default {
     },
     filesChange(event) {
       this.uploadedFile = event.target.files[0];
+
+      this.$emit('select', event.target.files[0]);
 
       this.currentStatus = STATUS_SUCCESS;
       if (this.uploader) {
